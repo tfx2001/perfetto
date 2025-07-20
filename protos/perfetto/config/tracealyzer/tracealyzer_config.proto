@@ -1,0 +1,7 @@
+syntax = "proto2";
+
+package perfetto.protos;
+
+message TracealyzerConfig {
+  optional string file_path = 1;
+}

@@ -74,6 +74,7 @@ source_set("probes_src") {
     "statsd_client",
     "sys_stats",
     "system_info",
+    "tracealyzer",
   ]
   sources = [
     "probes_producer.cc",

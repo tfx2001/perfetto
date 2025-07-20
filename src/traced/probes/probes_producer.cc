@@ -49,6 +49,7 @@
 #include "src/traced/probes/statsd_client/statsd_binder_data_source.h"
 #include "src/traced/probes/sys_stats/sys_stats_data_source.h"
 #include "src/traced/probes/system_info/system_info_data_source.h"
+#include "src/traced/probes/tracealyzer/tracealyzer_data_source.h"
 
 namespace perfetto {
 namespace {
@@ -326,6 +327,17 @@ ProbesProducer::CreateDSInstance<FrozenFtraceDataSource>(
       endpoint_->CreateTraceWriter(buffer_id, BufferExhaustedPolicy::kStall));
 }
 
+template <>
+std::unique_ptr<ProbesDataSource>
+ProbesProducer::CreateDSInstance<TracealyzerDataSource>(
+    TracingSessionID session_id,
+    const DataSourceConfig& config) {
+  auto buffer_id = static_cast<BufferID>(config.target_buffer());
+  return std::make_unique<TracealyzerDataSource>(
+      task_runner_, config, session_id,
+      endpoint_->CreateTraceWriter(buffer_id, BufferExhaustedPolicy::kStall));
+}
+
 // Another anonymous namespace. This cannot be moved into the anonymous
 // namespace on top (it would fail to compile), because the CreateDSInstance
 // methods need to be fully declared before.
@@ -364,6 +376,7 @@ constexpr const DataSourceTraits kAllDataSources[] = {
 #endif
     Ds<SysStatsDataSource>(),
     Ds<SystemInfoDataSource>(),
+    Ds<TracealyzerDataSource>(),
 };
 
 }  // namespace
