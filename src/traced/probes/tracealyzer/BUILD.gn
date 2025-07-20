@@ -1,0 +1,20 @@
+source_set("tracealyzer") {
+  public_deps = [ "../../../tracing/core" ]
+  deps = [
+    "..:data_source",
+    "../../../../gn:default_deps",
+    "../../../../include/perfetto/ext/traced",
+    "../../../../protos/perfetto/common:zero",
+    "../../../../protos/perfetto/trace:zero",
+    "../../../../protos/perfetto/trace/track_event:zero",
+    "../../../../protos/perfetto/config/tracealyzer:zero",
+    "../../../base",
+    "../common",
+  ]
+  sources = [
+    "trace_event.cc",
+    "trace_event.h",
+    "tracealyzer_data_source.cc",
+    "tracealyzer_data_source.h",
+  ]
+}

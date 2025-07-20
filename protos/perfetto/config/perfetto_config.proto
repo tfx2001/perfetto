@@ -3719,6 +3719,14 @@ message TestConfig {
 
 // End of protos/perfetto/config/test_config.proto
 
+// Begin of protos/perfetto/config/tracealyzer/tracealyzer_config.proto
+
+message TracealyzerConfig {
+  optional string file_path = 1;
+}
+
+// End of protos/perfetto/config/tracealyzer/tracealyzer_config.proto
+
 // Begin of protos/perfetto/config/track_event/track_event_config.proto
 
 message TrackEventConfig {
@@ -3809,7 +3817,7 @@ message TrackEventConfig {
 // Begin of protos/perfetto/config/data_source_config.proto
 
 // The configuration that is passed to each data source when starting tracing.
-// Next id: 138
+// Next id: 139
 message DataSourceConfig {
   enum SessionInitiator {
     SESSION_INITIATOR_UNSPECIFIED = 0;
@@ -4006,6 +4014,9 @@ message DataSourceConfig {
 
   // Data source name: android.cpu_per_uid
   optional CpuPerUidConfig cpu_per_uid_config = 137 [lazy = true];
+
+  // Data source name: tracealyzer
+  optional TracealyzerConfig tracealyzer_config = 138 [lazy = true];
 
   // This is a fallback mechanism to send a free-form text config to the
   // producer. In theory this should never be needed. All the code that
