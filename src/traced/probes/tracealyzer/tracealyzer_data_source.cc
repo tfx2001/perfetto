@@ -97,12 +97,13 @@ bool TraceEntryTable::Read(base::ScopedFile& file) {
             sizeof(entry.pvAddress) ||
         base::Read(*file, entry.xStates.data(),
                    uxEntryStateCount * sizeof(TraceUnsignedBaseType_t)) !=
-            uxEntryStateCount * sizeof(TraceUnsignedBaseType_t) ||
+            static_cast<ssize_t>(uxEntryStateCount *
+                                 sizeof(TraceUnsignedBaseType_t)) ||
         base::Read(*file, &entry.uiOptions, sizeof(entry.uiOptions)) !=
             sizeof(entry.uiOptions) ||
         base::Read(*file, entry.szSymbol.data(),
                    uxEntrySymbolLength * sizeof(char)) !=
-            uxEntrySymbolLength * sizeof(char)) {
+            static_cast<ssize_t>(uxEntrySymbolLength * sizeof(char))) {
       PERFETTO_ELOG("Failed to read TraceEntryTable entries.");
       return false;
     }
