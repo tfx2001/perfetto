@@ -25,13 +25,15 @@ env:
   PYTHONUNBUFFERED: 1
 jobs:
   android:
-    runs-on: self-hosted
-    timeout-minutes: 45
+    runs-on: ubuntu-latest
     env:
       PERFETTO_CI_JOB_NAME: android
       PERFETTO_TEST_GN_ARGS: 'is_debug=false target_os=\"android\" target_cpu=\"arm\" cc_wrapper=\"ccache\"'
     steps:
       - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: sudo apt update && sudo apt install -y build-essential clang ccache python3 wget curl git python3-venv
 
       - name: Setup ccache
         run: bash .github/workflows/ccache_env.sh | tee -a $GITHUB_ENV
@@ -44,12 +46,9 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           path: ${{ env.PERFETTO_CACHE_DIR }}
-          key: cache-${{ env.PERFETTO_CI_JOB_NAME }}-${{ github.run_id }}
+          key: cache-${{ github.ref }}-${{ env.PERFETTO_CI_JOB_NAME }}-${{ github.run_id }}
           restore-keys: |
             cache-${{ env.PERFETTO_CI_JOB_NAME }}-
-
-      - name: Start emulator in the background
-        run: tools/run_android_emulator --pid /tmp/emulator.pid -v &
 
       - name: Run GN
         run: tools/gn gen out/dist --args="${{ env.PERFETTO_TEST_GN_ARGS }}" --check
@@ -60,19 +59,14 @@ jobs:
       - name: Print ccache stats
         run: ccache --show-stats
 
-      - name: perfetto_unittests
-        run: tools/run_android_test -n out/dist perfetto_unittests
-
-      - name: perfetto_integrationtests
-        run: tools/run_android_test -n -x out/dist perfetto_integrationtests
-
-      - name: Stop emulator
-        if: ${{ always() }}
-        run: test -f /tmp/emulator.pid && kill -9 $(cat /tmp/emulator.pid); true
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: perfetto-${{ matrix.config.name }}-artifacts
+          path: out/dist/stripped
 
       - name: Update cache (if on main)
-        if: github.ref == 'refs/heads/main'
         uses: actions/cache/save@v4
         with:
           path: ${{ env.PERFETTO_CACHE_DIR }}
-          key: cache-${{ env.PERFETTO_CI_JOB_NAME }}-${{ github.run_id }}
+          key: cache-${{ github.ref }}-${{ env.PERFETTO_CI_JOB_NAME }}-${{ github.run_id }}

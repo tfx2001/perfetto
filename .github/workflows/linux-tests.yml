@@ -40,6 +40,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install dependencies
+        run: apt update && apt install -y build-essential clang ccache python3 wget curl git python3-venv
+
+      - uses: ./.github/actions/install-build-deps
+        with:
+          install-flags: ${{ matrix.config.PERFETTO_INSTALL_BUILD_DEPS_ARGS }}
+
       - name: Setup ccache
         run: bash .github/workflows/ccache_env.sh | tee -a $GITHUB_ENV
 
@@ -53,16 +60,9 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           path: ${{ env.PERFETTO_CACHE_DIR }}
-          key: cache-${{ matrix.config.name }}-${{ github.run_id }}
+          key: cache-${{ github.ref }}-${{ matrix.config.name }}-${{ github.run_id }}
           restore-keys: |
             cache-${{ matrix.config.name }}-
-
-      - name: Install dependencies
-        run: apt update && apt install -y build-essential clang ccache python3 wget curl git python3-venv
-
-      - uses: ./.github/actions/install-build-deps
-        with:
-          install-flags: ${{ matrix.config.PERFETTO_INSTALL_BUILD_DEPS_ARGS }}
 
       - name: Run GN
         env:
@@ -82,10 +82,8 @@ jobs:
           name: perfetto-${{ matrix.config.name }}-artifacts
           path: out/dist/stripped
 
-      - name: Update cache (if on main)
-        if: github.ref == 'refs/heads/main'
+      - name: Update cache
         uses: actions/cache/save@v4
         with:
           path: ${{ env.PERFETTO_CACHE_DIR }}
-          key: cache-${{ matrix.config.name }}-${{ github.run_id }}
-
+          key: cache-${{ github.ref }}-${{ matrix.config.name }}-${{ github.run_id }}

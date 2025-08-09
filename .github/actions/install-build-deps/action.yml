@@ -38,7 +38,7 @@ runs:
       uses: actions/cache/restore@v4
       with:
         path: buildtools
-        key: buildtools-${{ steps.cachekey.outputs.suffix }}-${{ hashFiles('tools/install-build-deps') }}
+        key: buildtools-${{ github.ref }}-${{ steps.cachekey.outputs.suffix }}-${{ hashFiles('tools/install-build-deps') }}
         restore-keys: |
           buildtools-${{ steps.cachekey.outputs.suffix }}-
           buildtools
@@ -47,9 +47,8 @@ runs:
       run: tools/install-build-deps ${{ inputs.install-flags }}
       shell: bash
 
-    - name: Save build-deps cache (only on main)
-      if: github.ref == 'refs/heads/main'
+    - name: Save build-deps cache
       uses: actions/cache/save@v4
       with:
         path: buildtools
-        key: buildtools-${{ steps.cachekey.outputs.suffix }}-${{ hashFiles('tools/install-build-deps') }}
+        key: buildtools-${{ github.ref }}-${{ steps.cachekey.outputs.suffix }}-${{ hashFiles('tools/install-build-deps') }}
