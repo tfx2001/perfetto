@@ -18,13 +18,14 @@ on:
   push:
     branches:
       - main
-      -  releases/*
+      - releases/*
 
   # 2. presubmit
   pull_request:
     types: [opened, synchronize]
     branches:
       - main
+      - releases/*
       - dev/**/*
 
 permissions:
@@ -38,3 +39,6 @@ concurrency:
 jobs:
   linux:
     uses: ./.github/workflows/linux-tests.yml
+
+  android:
+    uses: ./.github/workflows/android-tests.yml
