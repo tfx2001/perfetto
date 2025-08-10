@@ -38,7 +38,7 @@ runs:
       uses: actions/cache/restore@v4
       with:
         path: buildtools
-        key: buildtools-${{ github.ref }}-${{ steps.cachekey.outputs.suffix }}-${{ hashFiles('tools/install-build-deps') }}
+        key: buildtools-${{ steps.cachekey.outputs.suffix }}-${{ hashFiles('tools/install-build-deps') }}
         restore-keys: |
           buildtools-${{ steps.cachekey.outputs.suffix }}-
           buildtools
@@ -51,4 +51,4 @@ runs:
       uses: actions/cache/save@v4
       with:
         path: buildtools
-        key: buildtools-${{ github.ref }}-${{ steps.cachekey.outputs.suffix }}-${{ hashFiles('tools/install-build-deps') }}
+        key: buildtools-${{ steps.cachekey.outputs.suffix }}-${{ hashFiles('tools/install-build-deps') }}

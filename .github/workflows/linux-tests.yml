@@ -21,8 +21,6 @@ env:
   # that should be persisted across jobs, but only updated from the main
   # branch. This is populated by the "actions/cache/restore" step below.
   PERFETTO_CACHE_DIR: /tmp/cache
-  PERFETTO_ARTIFACTS_ROOT: /tmp/artifacts
-  PYTHONUNBUFFERED: 1
 jobs:
   linux:
     runs-on: ubuntu-latest
@@ -35,7 +33,7 @@ jobs:
             PERFETTO_TEST_GN_ARGS: 'is_debug=false target_cpu=\"x64\" cc_wrapper=\"ccache\"'
             PERFETTO_INSTALL_BUILD_DEPS_ARGS: ''
     env:
-      PERFETTO_CI_JOB_NAME: ${{ matrix.config.name }}
+      PERFETTO_CI_JOB_NAME: ${{ github.job }}-${{ matrix.config.name }}
       PERFETTO_CI_JOB_ID: gh-${{ github.run_id }}-${{ matrix.config.name }}
     steps:
       - uses: actions/checkout@v4
@@ -50,19 +48,13 @@ jobs:
       - name: Setup ccache
         run: bash .github/workflows/ccache_env.sh | tee -a $GITHUB_ENV
 
-      - name: Setup artifacts
-        run: |
-          PERFETTO_ARTIFACTS_DIR=$PERFETTO_ARTIFACTS_ROOT/$PERFETTO_CI_JOB_ID
-          echo "PERFETTO_ARTIFACTS_DIR=$PERFETTO_ARTIFACTS_DIR" >> $GITHUB_ENV
-          mkdir -p $PERFETTO_ARTIFACTS_DIR
-
       - name: Restore cache
         uses: actions/cache/restore@v4
         with:
           path: ${{ env.PERFETTO_CACHE_DIR }}
-          key: cache-${{ github.ref }}-${{ matrix.config.name }}-${{ github.run_id }}
+          key: cache-${{ env.PERFETTO_CI_JOB_NAME }}-${{ github.run_id }}
           restore-keys: |
-            cache-${{ matrix.config.name }}-
+            cache-${{ env.PERFETTO_CI_JOB_NAME }}-
 
       - name: Run GN
         env:
@@ -79,11 +71,11 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: perfetto-${{ matrix.config.name }}-artifacts
+          name: perfetto-${{ env.PERFETTO_CI_JOB_NAME }}-artifacts
           path: out/dist/stripped
 
       - name: Update cache
         uses: actions/cache/save@v4
         with:
           path: ${{ env.PERFETTO_CACHE_DIR }}
-          key: cache-${{ github.ref }}-${{ matrix.config.name }}-${{ github.run_id }}
+          key: cache-${{ env.PERFETTO_CI_JOB_NAME }}-${{ github.run_id }}
