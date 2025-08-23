@@ -28,7 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       PERFETTO_CI_JOB_NAME: android
-      PERFETTO_TEST_GN_ARGS: 'is_debug=false target_os=\"android\" target_cpu=\"arm\" cc_wrapper=\"ccache\"'
+      PERFETTO_TEST_GN_ARGS: 'is_debug=false target_os=\"android\" target_cpu=\"arm64\" cc_wrapper=\"ccache\"'
     steps:
       - uses: actions/checkout@v4
 
