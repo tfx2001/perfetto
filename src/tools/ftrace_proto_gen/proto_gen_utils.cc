@@ -199,6 +199,8 @@ ProtoType InferProtoType(const FtraceEvent::Field& field) {
     return ProtoType::String();
   if (Contains(field.type_and_name, "char * "))
     return ProtoType::String();
+  if (Contains(field.type_and_name, "__u8[] "))
+    return ProtoType::String();
 
   // Variable length strings: "char* foo"
   if (StartsWith(field.type_and_name, "char *"))
