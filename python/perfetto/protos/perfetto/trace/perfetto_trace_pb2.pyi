@@ -9614,11 +9614,11 @@ class I2cReplyFtraceEvent(_message.Message):
     MSG_NR_FIELD_NUMBER: _ClassVar[int]
     adapter_nr: int
     addr: int
-    buf: int
+    buf: str
     flags: int
     len: int
     msg_nr: int
-    def __init__(self, adapter_nr: _Optional[int] = ..., msg_nr: _Optional[int] = ..., addr: _Optional[int] = ..., flags: _Optional[int] = ..., len: _Optional[int] = ..., buf: _Optional[int] = ...) -> None: ...
+    def __init__(self, adapter_nr: _Optional[int] = ..., msg_nr: _Optional[int] = ..., addr: _Optional[int] = ..., flags: _Optional[int] = ..., len: _Optional[int] = ..., buf: _Optional[str] = ...) -> None: ...
 
 class I2cResultFtraceEvent(_message.Message):
     __slots__ = ["adapter_nr", "nr_msgs", "ret"]
@@ -9640,11 +9640,11 @@ class I2cWriteFtraceEvent(_message.Message):
     MSG_NR_FIELD_NUMBER: _ClassVar[int]
     adapter_nr: int
     addr: int
-    buf: int
+    buf: str
     flags: int
     len: int
     msg_nr: int
-    def __init__(self, adapter_nr: _Optional[int] = ..., msg_nr: _Optional[int] = ..., addr: _Optional[int] = ..., flags: _Optional[int] = ..., len: _Optional[int] = ..., buf: _Optional[int] = ...) -> None: ...
+    def __init__(self, adapter_nr: _Optional[int] = ..., msg_nr: _Optional[int] = ..., addr: _Optional[int] = ..., flags: _Optional[int] = ..., len: _Optional[int] = ..., buf: _Optional[str] = ...) -> None: ...
 
 class InetSockSetStateFtraceEvent(_message.Message):
     __slots__ = ["daddr", "dport", "family", "newstate", "oldstate", "protocol", "saddr", "skaddr", "sport"]
